@@ -26,12 +26,11 @@
             padding: 40px 20px;
         }
 
-        /* HEADER BANNER PERTAMA */
+        /* HERO BANNER */
         .hero-banner {
             width: 100%;
             max-width: 860px;
-            background: linear-state, linear-gradient(135deg, #1e1b4b 0%, #31106a 50%, #3b0764 100%);
-            background-color: #1e1b4b;
+            background: linear-gradient(135deg, #1e1b4b 0%, #31106a 50%, #3b0764 100%);
             border-radius: 24px;
             padding: 45px 30px;
             text-align: center;
@@ -68,7 +67,7 @@
             line-height: 1.6;
         }
 
-        /* KARTU BATAS AKHIR (TAHAP 1 & TAHAP 2) */
+        /* KARTU BATAS AKHIR */
         .deadline-container {
             width: 100%;
             max-width: 860px;
@@ -100,15 +99,8 @@
             font-weight: bold;
         }
 
-        .icon-orange {
-            background-color: #f59e0b;
-            color: white;
-        }
-
-        .icon-purple {
-            background-color: #4f46e5;
-            color: white;
-        }
+        .icon-orange { background-color: #f59e0b; color: white; }
+        .icon-purple { background-color: #4f46e5; color: white; }
 
         .deadline-text span {
             display: block;
@@ -126,7 +118,7 @@
             color: #1e293b;
         }
 
-        /* WADAH PENCARIAN & HASIL */
+        /* WADAH UTAMA */
         .main-card {
             width: 100%;
             max-width: 860px;
@@ -137,7 +129,7 @@
             border: 1px solid #f1f5f9;
         }
 
-        /* INPUT SEARCH BOX */
+        /* INPUT AUTOCOMPLETE BOX */
         .search-box {
             position: relative;
             margin-bottom: 20px;
@@ -171,6 +163,45 @@
             opacity: 0.6;
         }
 
+        /* DROPDOWN SARAN (AUTOCOMPLETE) */
+        .suggestions-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            margin-top: 6px;
+            max-height: 250px;
+            overflow-y: auto;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+            z-index: 50;
+            display: none;
+        }
+
+        .suggestion-item {
+            padding: 12px 18px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1e293b;
+            cursor: pointer;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.15s;
+        }
+
+        .suggestion-item:last-child { border-bottom: none; }
+        .suggestion-item:hover { background: #f8fafc; color: #4f46e5; }
+        
+        .suggestion-item .hint-click {
+            font-size: 11px;
+            color: #94a3b8;
+            font-weight: 600;
+        }
+
         button.btn-cari {
             width: 100%;
             background-color: #0d9488;
@@ -185,16 +216,10 @@
             margin-bottom: 24px;
         }
 
-        button.btn-cari:hover {
-            background-color: #0f766e;
-        }
+        button.btn-cari:hover { background-color: #0f766e; }
+        button.btn-cari:disabled { background-color: #94a3b8; cursor: not-allowed; }
 
-        button.btn-cari:disabled {
-            background-color: #94a3b8;
-            cursor: not-allowed;
-        }
-
-        /* HASIL DATA (KARTU MAHASISWA) */
+        /* KARTU HASIL */
         .result-card {
             border: 1px solid #e2e8f0;
             border-radius: 16px;
@@ -204,9 +229,7 @@
             transition: transform 0.2s;
         }
 
-        .result-card:hover {
-            border-color: #cbd5e1;
-        }
+        .result-card:hover { border-color: #cbd5e1; }
 
         .result-header {
             display: flex;
@@ -223,7 +246,6 @@
             color: #0f172a;
         }
 
-        /* BADGE STATUS YANG RAPID DAN MODERN */
         .status-badge {
             padding: 6px 14px;
             border-radius: 20px;
@@ -234,20 +256,9 @@
             gap: 6px;
         }
 
-        .badge-valid {
-            background-color: #dcfce7;
-            color: #15803d;
-        }
-
-        .badge-proses {
-            background-color: #fef3c7;
-            color: #b45309;
-        }
-
-        .badge-invalid {
-            background-color: #fee2e2;
-            color: #b91c1c;
-        }
+        .badge-valid { background-color: #dcfce7; color: #15803d; }
+        .badge-proses { background-color: #fef3c7; color: #b45309; }
+        .badge-invalid { background-color: #fee2e2; color: #b91c1c; }
 
         .detail-row {
             display: grid;
@@ -300,35 +311,22 @@
             text-align: center;
         }
 
-        /* RESPONSIF UNTUK HP */
         @media (max-width: 640px) {
-            .deadline-container {
-                grid-template-columns: 1fr;
-                gap: 14px;
-            }
-            .hero-banner h1 {
-                font-size: 26px;
-            }
-            .detail-row {
-                grid-template-columns: 1fr;
-            }
-            .result-header {
-                flex-direction: column;
-                gap: 10px;
-            }
+            .deadline-container { grid-template-columns: 1fr; gap: 14px; }
+            .hero-banner h1 { font-size: 26px; }
+            .detail-row { grid-template-columns: 1fr; }
+            .result-header { flex-direction: column; gap: 10px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- HERO BANNER UNGU DESAIN GAMBAR 2 -->
     <div class="hero-banner">
         <div class="badge-portal">PORTAL KEUANGAN</div>
         <h1>Cek Pembayaran Kuliah</h1>
         <p>Silakan ketik Nama Lengkap Anda untuk mengecek status pembayaran biaya kuliah secara real-time.</p>
     </div>
 
-    <!-- KARTU BATAS AKHIR TAHAP 1 & 2 -->
     <div class="deadline-container">
         <div class="deadline-box">
             <div class="deadline-icon icon-orange">📅</div>
@@ -346,10 +344,11 @@
         </div>
     </div>
 
-    <!-- KARTU UTAMA PENCARIAN -->
     <div class="main-card">
         <div class="search-box">
-            <input type="text" id="namaCari" placeholder="Masukkan nama lengkap (min. 3 huruf)..." onkeydown="if(event.key === 'Enter') cariData()">
+            <input type="text" id="namaCari" placeholder="Masukkan nama lengkap (min. 3 huruf)..." autocomplete="off">
+            <!-- WADAH DROPDOWN AUTOCOMPLETE -->
+            <div id="suggestions" class="suggestions-list"></div>
         </div>
         
         <button onclick="cariData()" id="btnCari" class="btn-cari">Cari Data Pembayaran</button>
@@ -363,7 +362,90 @@
 
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbypD_evDfABwwvCoHPSkAxjxDL1lQ4MkC10mWs8fY1LV5CS2p3Mrlu4WEZ3voQTLS654A/exec";
+        const CACHE_KEY = "database_ukt_2026";
+        const CACHE_TIME_KEY = "database_ukt_time";
+        const CACHE_DURATION = 5 * 60 * 1000; // Cache berlaku 5 menit
 
+        let databasePembayaran = [];
+
+        // 1. OTOMATIS LOAD & CACHE DATABASE SAAT HALAMAN DIBUKA
+        document.addEventListener("DOMContentLoaded", () => {
+            muatDatabaseCache();
+
+            const inputNama = document.getElementById("namaCari");
+            const suggestionBox = document.getElementById("suggestions");
+
+            // Event saat mengetik 3 huruf -> Muncul Suggestion
+            inputNama.addEventListener("input", function() {
+                const query = this.value.trim().toLowerCase();
+                suggestionBox.innerHTML = "";
+
+                if (query.length >= 3 && databasePembayaran.length > 0) {
+                    const hasilFilter = databasePembayaran.filter(item => 
+                        item.nama.toLowerCase().includes(query)
+                    ).slice(0, 6); // Maksimal tampilkan 6 nama rekomendasi
+
+                    if (hasilFilter.length > 0) {
+                        hasilFilter.forEach(item => {
+                            const div = document.createElement("div");
+                            div.className = "suggestion-item";
+                            div.innerHTML = `<span>${item.nama}</span> <span class="hint-click">Klik untuk lihat</span>`;
+                            div.onclick = () => {
+                                inputNama.value = item.nama;
+                                suggestionBox.style.display = "none";
+                                tampilkanHasil([item]); // Langsung tampilkan hasil tanpa klik tombol cari lagi
+                            };
+                            suggestionBox.appendChild(div);
+                        });
+                        suggestionBox.style.display = "block";
+                        return;
+                    }
+                }
+                suggestionBox.style.display = "none";
+            });
+
+            // Tutup dropdown jika klik di luar area input
+            document.addEventListener("click", function(e) {
+                if (e.target !== inputNama) {
+                    suggestionBox.style.display = "none";
+                }
+            });
+
+            // Enter untuk pencarian
+            inputNama.addEventListener("keydown", function(e) {
+                if (e.key === "Enter") {
+                    suggestionBox.style.display = "none";
+                    cariData();
+                }
+            });
+        });
+
+        // 2. FUNGSI MANAJEMEN CACHE
+        function muatDatabaseCache() {
+            const cachedData = sessionStorage.getItem(CACHE_KEY);
+            const cachedTime = sessionStorage.getItem(CACHE_TIME_KEY);
+            const now = new Date().getTime();
+
+            // Jika cache ada dan belum kadaluarsa (5 menit), gunakan cache
+            if (cachedData && cachedTime && (now - cachedTime < CACHE_DURATION)) {
+                databasePembayaran = JSON.parse(cachedData);
+                return;
+            }
+
+            // Jika belum ada cache, unduh dari Apps Script secara background
+            fetch(SCRIPT_URL + "?action=all")
+                .then(res => res.json())
+                .then(data => {
+                    if (Array.isArray(data) && !data[0]?.error) {
+                        databasePembayaran = data;
+                        sessionStorage.setItem(CACHE_KEY, JSON.stringify(data));
+                        sessionStorage.setItem(CACHE_TIME_KEY, now);
+                    }
+                })
+                .catch(err => console.error("Gagal menyinkronkan database cache:", err));
+        }
+
+        // 3. FUNGSI TOMBOL CARI (Bisa dari cache atau fetch server)
         function cariData() {
             var nama = document.getElementById("namaCari").value.trim();
             var hasilDiv = document.getElementById("hasil");
@@ -374,22 +456,26 @@
                 return;
             }
 
+            // Cek terlebih dahulu di Cache Browser (sangat cepat)
+            if (databasePembayaran.length > 0) {
+                const hasilCache = databasePembayaran.filter(item => 
+                    item.nama.toLowerCase().includes(nama.toLowerCase())
+                );
+                if (hasilCache.length > 0) {
+                    tampilkanHasil(hasilCache);
+                    return;
+                }
+            }
+
+            // Jika tidak ketemu di cache, lakukan fetch ke server
             hasilDiv.innerHTML = '<p class="loading">⏳ Menelusuri database pembayaran... Mohon tunggu.</p>';
             btnCari.disabled = true;
 
-            var targetUrl = SCRIPT_URL + "?nama=" + encodeURIComponent(nama);
-
-            fetch(targetUrl)
-                .then(response => response.text()) 
-                .then(text => {
+            fetch(SCRIPT_URL + "?nama=" + encodeURIComponent(nama))
+                .then(response => response.json()) 
+                .then(data => {
                     btnCari.disabled = false;
-                    try {
-                        var data = JSON.parse(text);
-                        tampilkanHasil(data);
-                    } catch (e) {
-                        console.error("Kesalahan parsing JSON:", text);
-                        hasilDiv.innerHTML = '<div class="error-msg"><strong>Terjadi Kesalahan Server!</strong><br>Pastikan Google Apps Script sudah di-deploy ke versi baru dengan hak akses "Anyone".</div>';
-                    }
+                    tampilkanHasil(data);
                 })
                 .catch(error => {
                     btnCari.disabled = false;
@@ -398,6 +484,7 @@
                 });
         }
 
+        // 4. RENDER KARTU HASIL
         function tampilkanHasil(data) {
             var hasilDiv = document.getElementById("hasil");
             hasilDiv.innerHTML = "";
@@ -416,10 +503,8 @@
             for (var i = 0; i < data.length; i++) {
                 var item = data[i];
                 var statusBadge = "";
-
                 var ketLowerCase = (item.keterangan || "").toLowerCase();
                 
-                // PENGATURAN WARNA BADGE
                 if (ketLowerCase.includes("tidak valid") || ketLowerCase.includes("tolak") || ketLowerCase.includes("revisi")) {
                     statusBadge = `<span class="status-badge badge-invalid">✕ ${item.keterangan}</span>`;
                 } else if (ketLowerCase.includes("valid") || ketLowerCase.includes("terverifikasi") || ketLowerCase.includes("lunas")) {
