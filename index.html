@@ -1,31 +1,118 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+    <base target="_top">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Kampus</title>
+    <title>Cek Pembayaran Herregistrasi</title>
     <style>
-        /* Menghilangkan margin dan padding bawaan browser agar iframe bisa memenuhi layar */
-        html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden; /* Mencegah scroll ganda dari body */
-            background-color: #ffffff;
-        }
-
-        /* Mengatur iframe agar berukuran penuh tanpa batas (border) */
-        iframe {
-            border: none;
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #2c3e50; margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        input[type="text"] { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 16px; }
+        button { width: 100%; background-color: #2980b9; color: white; padding: 12px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; transition: background 0.3s; }
+        button:hover { background-color: #3498db; }
+        #hasil { margin-top: 20px; }
+        .card { border: 1px solid #e1e8ed; border-radius: 6px; padding: 15px; margin-bottom: 15px; background-color: #fafbfc; }
+        .card h3 { margin: 0 0 10px 0; color: #2c3e50; border-bottom: 2px solid #ecf0f1; padding-bottom: 5px; }
+        .card p { margin: 5px 0; font-size: 14px; }
+        .status-valid { color: #27ae60; font-weight: bold; }
+        .status-proses { color: #f39c12; font-weight: bold; }
+        .status-invalid { color: #e74c3c; font-weight: bold; }
+        .loading { text-align: center; font-style: italic; color: #7f8c8d; }
     </style>
 </head>
 <body>
-    <!-- Memuat link Google Apps Script Baru -->
-    <iframe src="https://script.google.com/macros/s/AKfycbypD_evDfABwwvCoHPSkAxjxDL1lQ4MkC10mWs8fY1LV5CS2p3Mrlu4WEZ3voQTLS654A/exec" allowfullscreen></iframe>
+    <div class="container">
+        <h2>Cek Status Pembayaran</h2>
+        <div class="form-group">
+            <input type="text" id="namaCari" placeholder="Masukkan nama Anda (min. 3 huruf)" onkeydown="if(event.key === 'Enter') cariData()">
+        </div>
+        <button onclick="cariData()" id="btnCari">Cari Data</button>
+        <div id="hasil"></div>
+    </div>
+
+    <script>
+        // Mengambil URL Google Apps Script secara dinamis dari Code.gs
+        const SCRIPT_URL = "<?= getScriptUrl() ?>";
+
+        function cariData() {
+            var nama = document.getElementById("namaCari").value;
+            var hasilDiv = document.getElementById("hasil");
+            var btnCari = document.getElementById("btnCari");
+
+            if (nama.length < 3) {
+                hasilDiv.innerHTML = '<p style="color:red; text-align:center;">Silakan masukkan minimal 3 huruf nama Anda.</p>';
+                return;
+            }
+
+            // Tampilan loading
+            hasilDiv.innerHTML = '<p class="loading">Mengambil data... Mohon tunggu.</p>';
+            btnCari.disabled = true;
+            btnCari.style.backgroundColor = "#95a5a6";
+
+            // Endpoint JSON Fetch (Tanpa google.script.run)
+            var targetUrl = SCRIPT_URL + "?nama=" + encodeURIComponent(nama);
+
+            fetch(targetUrl)
+                .then(response => response.json())
+                .then(data => {
+                    btnCari.disabled = false;
+                    btnCari.style.backgroundColor = "#2980b9";
+                    tampilkanHasil(data);
+                })
+                .catch(error => {
+                    btnCari.disabled = false;
+                    btnCari.style.backgroundColor = "#2980b9";
+                    hasilDiv.innerHTML = '<p style="color:red; text-align:center;">Gagal menghubungi server. Periksa koneksi Anda.</p>';
+                    console.error("Error Fetch:", error);
+                });
+        }
+
+        function tampilkanHasil(data) {
+            var hasilDiv = document.getElementById("hasil");
+            hasilDiv.innerHTML = "";
+
+            if (data.length > 0 && data[0].error) {
+                hasilDiv.innerHTML = '<p style="text-align:center; color:#e74c3c;">' + data[0].pesan + '</p>';
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                hasilDiv.innerHTML = '<p style="text-align:center; color:#e74c3c;">Data tidak ditemukan. Pastikan nama yang Anda masukkan sudah benar.</p>';
+                return;
+            }
+
+            var html = "";
+            for (var i = 0; i < data.length; i++) {
+                var item = data[i];
+                var statusClass = "";
+
+                if (item.keterangan.includes("Valid") && !item.keterangan.includes("Tidak Valid")) {
+                    statusClass = "status-valid";
+                } else if (item.keterangan.includes("Tidak Valid")) {
+                    statusClass = "status-invalid";
+                } else {
+                    statusClass = "status-proses";
+                }
+
+                html += '<div class="card">';
+                html += '<h3>' + item.nama + '</h3>';
+                html += '<p><strong>Status:</strong> <span class="' + statusClass + '">' + item.keterangan + '</span></p>';
+                
+                // Jika statusnya valid atau kosong (proses), tampilkan ini. 
+                // Jika '-' atau tidak valid, tidak ditampilkan.
+                if (item.tanggal !== "-" && item.nominal !== "-") {
+                    html += '<p><strong>Tanggal Pembayaran:</strong> ' + item.tanggal + '</p>';
+                    html += '<p><strong>Nominal Pembayaran:</strong> ' + item.nominal + '</p>';
+                }
+                
+                html += '</div>';
+            }
+
+            hasilDiv.innerHTML = html;
+        }
+    </script>
 </body>
 </html>
