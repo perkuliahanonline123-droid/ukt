@@ -39,7 +39,8 @@
     </div>
 
     <script>
-        const SCRIPT_URL = "<?= getScriptUrl() ?>";
+        // PERBAIKAN: Masukkan URL Web App Google Apps Script secara langsung (Hardcode)
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbypD_evDfABwwvCoHPSkAxjxDL1lQ4MkC10mWs8fY1LV5CS2p3Mrlu4WEZ3voQTLS654A/exec";
 
         function cariData() {
             var nama = document.getElementById("namaCari").value;
@@ -68,6 +69,7 @@
                     btnCari.disabled = false;
                     btnCari.style.backgroundColor = "#2980b9";
                     hasilDiv.innerHTML = '<p style="color:red; text-align:center;">Gagal menghubungi server. Periksa koneksi Anda.</p>';
+                    console.error('Error fetching data:', error);
                 });
         }
 
@@ -107,7 +109,6 @@
 
                 if (item.tanggal !== "-" || item.nominal !== "-") {
                     html += '<hr style="border: 0; border-top: 1px solid #ecf0f1; margin: 10px 0;">';
-                    // Menampilkan Nominal terlebih dahulu, lalu Tanggal di bawahnya
                     html += '<p><strong>Nominal Pembayaran:</strong> ' + nomDisplay + '</p>';
                     html += '<p><strong>Tanggal Pembayaran:</strong> ' + tglDisplay + '</p>';
                 }
