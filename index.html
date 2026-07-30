@@ -7,7 +7,7 @@
     <title>Cek Pembayaran Kuliah - Portal Keuangan</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
             box-sizing: border-box;
@@ -118,7 +118,7 @@
             color: #1e293b;
         }
 
-        /* WADAH UTAMA */
+        /* WADAH UTAMA PENCARIAN & HASIL */
         .main-card {
             width: 100%;
             max-width: 860px;
@@ -129,7 +129,7 @@
             border: 1px solid #f1f5f9;
         }
 
-        /* INPUT AUTOCOMPLETE BOX */
+        /* INPUT SEARCH BOX */
         .search-box {
             position: relative;
             margin-bottom: 20px;
@@ -137,171 +137,163 @@
 
         .search-box input {
             width: 100%;
-            padding: 16px 20px 16px 48px;
-            border: 1.5px solid #4f46e5;
-            border-radius: 14px;
-            font-size: 15px;
-            font-weight: 500;
+            padding: 18px 20px 18px 52px;
+            border: 2px solid #4f46e5;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
             color: #1e293b;
             outline: none;
             transition: all 0.2s;
             background: #fafaf9;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.08);
         }
 
         .search-box input:focus {
             background: white;
-            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+            box-shadow: 0 0 0 5px rgba(79, 70, 229, 0.15);
         }
 
         .search-box::before {
             content: "🔍";
             position: absolute;
-            left: 18px;
+            left: 20px;
             top: 50%;
             transform: translateY(-50%);
-            font-size: 18px;
+            font-size: 20px;
             opacity: 0.6;
         }
 
-        /* DROPDOWN SARAN (AUTOCOMPLETE) */
-        .suggestions-list {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            margin-top: 6px;
-            max-height: 250px;
-            overflow-y: auto;
-            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
-            z-index: 50;
-            display: none;
-        }
-
-        .suggestion-item {
-            padding: 12px 18px;
-            font-size: 14px;
-            font-weight: 500;
-            color: #1e293b;
-            cursor: pointer;
-            border-bottom: 1px solid #f1f5f9;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: background 0.15s;
-        }
-
-        .suggestion-item:last-child { border-bottom: none; }
-        .suggestion-item:hover { background: #f8fafc; color: #4f46e5; }
-        
-        .suggestion-item .hint-click {
-            font-size: 11px;
-            color: #94a3b8;
-            font-weight: 600;
-        }
-
-        button.btn-cari {
-            width: 100%;
-            background-color: #0d9488;
-            color: white;
-            padding: 15px;
-            border: none;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            margin-bottom: 24px;
-        }
-
-        button.btn-cari:hover { background-color: #0f766e; }
-        button.btn-cari:disabled { background-color: #94a3b8; cursor: not-allowed; }
-
-        /* KARTU HASIL */
+        /* DESAIN KARTU TIMBUL SATU KOTAK PER MAHASISWA */
         .result-card {
             border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 16px;
+            border-radius: 20px;
+            padding: 28px;
+            margin-bottom: 20px;
             background: #ffffff;
-            transition: transform 0.2s;
+            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 4px 6px -2px rgba(15, 23, 42, 0.04);
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
-        .result-card:hover { border-color: #cbd5e1; }
+        .result-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px -5px rgba(15, 23, 42, 0.12);
+        }
 
         .result-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            border-bottom: 1px dashed #e2e8f0;
-            padding-bottom: 14px;
-            margin-bottom: 16px;
+            border-bottom: 2px dashed #e2e8f0;
+            padding-bottom: 16px;
+            margin-bottom: 20px;
+            gap: 15px;
         }
 
         .student-name {
-            font-size: 18px;
-            font-weight: 700;
+            font-size: 20px;
+            font-weight: 800;
             color: #0f172a;
         }
 
-        .status-badge {
-            padding: 6px 14px;
-            border-radius: 20px;
+        .student-nim {
             font-size: 13px;
-            font-weight: 700;
+            color: #64748b;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+
+        /* BADGE STATUS LUNAS / BELUM LUNAS */
+        .status-badge {
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 800;
             display: inline-flex;
             align-items: center;
             gap: 6px;
+            letter-spacing: 0.5px;
         }
 
-        .badge-valid { background-color: #dcfce7; color: #15803d; }
-        .badge-proses { background-color: #fef3c7; color: #b45309; }
-        .badge-invalid { background-color: #fee2e2; color: #b91c1c; }
+        .badge-lunas {
+            background-color: #dcfce7;
+            color: #15803d;
+            border: 1px solid #86efac;
+        }
+
+        .badge-belum {
+            background-color: #fef3c7;
+            color: #b45309;
+            border: 1px solid #fde047;
+        }
 
         .detail-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
+            gap: 16px;
             font-size: 14px;
+            margin-bottom: 16px;
         }
 
         .detail-item span {
             display: block;
-            font-size: 12px;
+            font-size: 11px;
             color: #64748b;
             margin-bottom: 4px;
-            font-weight: 500;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
 
         .detail-item strong {
             color: #1e293b;
-            font-weight: 600;
-            font-size: 15px;
+            font-weight: 700;
+            font-size: 18px;
         }
 
-        .text-proses {
-            color: #d97706;
-            background: #fef3c7;
-            padding: 2px 8px;
-            border-radius: 6px;
+        /* DAFTAR RIWAYAT TRANSAKSI DALAM KARTU */
+        .history-section {
+            margin-top: 18px;
+            padding-top: 14px;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .history-title {
             font-size: 12px;
-            font-weight: 600;
+            font-weight: 700;
+            color: #94a3b8;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .loading, .error-msg {
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: #475569;
+            padding: 4px 0;
+        }
+
+        .loading, .error-msg, .info-msg {
             text-align: center;
-            padding: 20px;
-            font-size: 14px;
+            padding: 24px;
+            font-size: 15px;
             color: #64748b;
         }
 
         .error-msg {
             color: #dc2626;
             background: #fef2f2;
-            border-radius: 12px;
+            border-radius: 14px;
             border: 1px solid #fee2e2;
+            font-weight: 500;
+        }
+
+        .info-msg {
+            background: #f8fafc;
+            border-radius: 14px;
+            border: 1px dashed #cbd5e1;
         }
 
         footer {
@@ -315,18 +307,20 @@
             .deadline-container { grid-template-columns: 1fr; gap: 14px; }
             .hero-banner h1 { font-size: 26px; }
             .detail-row { grid-template-columns: 1fr; }
-            .result-header { flex-direction: column; gap: 10px; }
+            .result-header { flex-direction: column; gap: 12px; }
         }
     </style>
 </head>
 <body>
 
+    <!-- HERO BANNER -->
     <div class="hero-banner">
         <div class="badge-portal">PORTAL KEUANGAN</div>
         <h1>Cek Pembayaran Kuliah</h1>
         <p>Silakan ketik Nama Lengkap Anda untuk mengecek status pembayaran biaya kuliah secara real-time.</p>
     </div>
 
+    <!-- KARTU BATAS AKHIR -->
     <div class="deadline-container">
         <div class="deadline-box">
             <div class="deadline-icon icon-orange">📅</div>
@@ -344,16 +338,15 @@
         </div>
     </div>
 
+    <!-- WADAH PENCARIAN & KARTU HASIL -->
     <div class="main-card">
         <div class="search-box">
-            <input type="text" id="namaCari" placeholder="Masukkan nama lengkap (min. 3 huruf)..." autocomplete="off">
-            <!-- WADAH DROPDOWN AUTOCOMPLETE -->
-            <div id="suggestions" class="suggestions-list"></div>
+            <input type="text" id="namaCari" placeholder="Ketik nama lengkap (min. 3 huruf)..." autocomplete="off">
         </div>
-        
-        <button onclick="cariData()" id="btnCari" class="btn-cari">Cari Data Pembayaran</button>
 
-        <div id="hasil"></div>
+        <div id="hasil">
+            <div class="info-msg">Ketik minimal 3 huruf pada kotak di atas untuk melihat status pembayaran Anda.</div>
+        </div>
     </div>
 
     <footer>
@@ -364,75 +357,49 @@
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbypD_evDfABwwvCoHPSkAxjxDL1lQ4MkC10mWs8fY1LV5CS2p3Mrlu4WEZ3voQTLS654A/exec";
         const CACHE_KEY = "database_ukt_2026";
         const CACHE_TIME_KEY = "database_ukt_time";
-        const CACHE_DURATION = 5 * 60 * 1000; // Cache berlaku 5 menit
+        const CACHE_DURATION = 5 * 60 * 1000; // Cache 5 menit
 
         let databasePembayaran = [];
 
-        // 1. OTOMATIS LOAD & CACHE DATABASE SAAT HALAMAN DIBUKA
+        // 1. OTOMATIS LOAD CACHE DATABASE SAAT HALAMAN DIBUKA
         document.addEventListener("DOMContentLoaded", () => {
             muatDatabaseCache();
 
             const inputNama = document.getElementById("namaCari");
-            const suggestionBox = document.getElementById("suggestions");
-
-            // Event saat mengetik 3 huruf -> Muncul Suggestion
+            
+            // Pencarian Real-Time setiap kali mengetik (tanpa tombol dan tanpa dropdown)
             inputNama.addEventListener("input", function() {
                 const query = this.value.trim().toLowerCase();
-                suggestionBox.innerHTML = "";
+                const hasilDiv = document.getElementById("hasil");
 
-                if (query.length >= 3 && databasePembayaran.length > 0) {
+                if (query.length < 3) {
+                    hasilDiv.innerHTML = '<div class="info-msg">Ketik minimal 3 huruf pada kotak di atas untuk melihat status pembayaran Anda.</div>';
+                    return;
+                }
+
+                if (databasePembayaran.length > 0) {
+                    // Cari semua baris pembayaran yang cocok dengan nama
                     const hasilFilter = databasePembayaran.filter(item => 
-                        item.nama.toLowerCase().includes(query)
-                    ).slice(0, 6); // Maksimal tampilkan 6 nama rekomendasi
-
-                    if (hasilFilter.length > 0) {
-                        hasilFilter.forEach(item => {
-                            const div = document.createElement("div");
-                            div.className = "suggestion-item";
-                            div.innerHTML = `<span>${item.nama}</span> <span class="hint-click">Klik untuk lihat</span>`;
-                            div.onclick = () => {
-                                inputNama.value = item.nama;
-                                suggestionBox.style.display = "none";
-                                tampilkanHasil([item]); // Langsung tampilkan hasil tanpa klik tombol cari lagi
-                            };
-                            suggestionBox.appendChild(div);
-                        });
-                        suggestionBox.style.display = "block";
-                        return;
-                    }
-                }
-                suggestionBox.style.display = "none";
-            });
-
-            // Tutup dropdown jika klik di luar area input
-            document.addEventListener("click", function(e) {
-                if (e.target !== inputNama) {
-                    suggestionBox.style.display = "none";
-                }
-            });
-
-            // Enter untuk pencarian
-            inputNama.addEventListener("keydown", function(e) {
-                if (e.key === "Enter") {
-                    suggestionBox.style.display = "none";
-                    cariData();
+                        item.nama && item.nama.toLowerCase().includes(query)
+                    );
+                    tampilkanHasil(hasilFilter);
+                } else {
+                    hasilDiv.innerHTML = '<p class="loading">⏳ Sedang memuat database... Mohon tunggu sebentar.</p>';
                 }
             });
         });
 
-        // 2. FUNGSI MANAJEMEN CACHE
+        // 2. FUNGSI MUAT DATABASE KE MEMORI BROWSER
         function muatDatabaseCache() {
             const cachedData = sessionStorage.getItem(CACHE_KEY);
             const cachedTime = sessionStorage.getItem(CACHE_TIME_KEY);
             const now = new Date().getTime();
 
-            // Jika cache ada dan belum kadaluarsa (5 menit), gunakan cache
             if (cachedData && cachedTime && (now - cachedTime < CACHE_DURATION)) {
                 databasePembayaran = JSON.parse(cachedData);
                 return;
             }
 
-            // Jika belum ada cache, unduh dari Apps Script secara background
             fetch(SCRIPT_URL + "?action=all")
                 .then(res => res.json())
                 .then(data => {
@@ -445,94 +412,106 @@
                 .catch(err => console.error("Gagal menyinkronkan database cache:", err));
         }
 
-        // 3. FUNGSI TOMBOL CARI (Bisa dari cache atau fetch server)
-        function cariData() {
-            var nama = document.getElementById("namaCari").value.trim();
-            var hasilDiv = document.getElementById("hasil");
-            var btnCari = document.getElementById("btnCari");
-
-            if (nama.length < 3) {
-                hasilDiv.innerHTML = '<div class="error-msg">Silakan masukkan minimal 3 huruf nama Anda.</div>';
-                return;
-            }
-
-            // Cek terlebih dahulu di Cache Browser (sangat cepat)
-            if (databasePembayaran.length > 0) {
-                const hasilCache = databasePembayaran.filter(item => 
-                    item.nama.toLowerCase().includes(nama.toLowerCase())
-                );
-                if (hasilCache.length > 0) {
-                    tampilkanHasil(hasilCache);
-                    return;
-                }
-            }
-
-            // Jika tidak ketemu di cache, lakukan fetch ke server
-            hasilDiv.innerHTML = '<p class="loading">⏳ Menelusuri database pembayaran... Mohon tunggu.</p>';
-            btnCari.disabled = true;
-
-            fetch(SCRIPT_URL + "?nama=" + encodeURIComponent(nama))
-                .then(response => response.json()) 
-                .then(data => {
-                    btnCari.disabled = false;
-                    tampilkanHasil(data);
-                })
-                .catch(error => {
-                    btnCari.disabled = false;
-                    hasilDiv.innerHTML = '<div class="error-msg">Gagal terhubung ke server. Periksa koneksi internet Anda.</div>';
-                    console.error('Error fetching data:', error);
-                });
+        // 3. FUNGSI PARSING NOMINAL ANGKA DARI STRING ("Rp4.000.000,-" -> 4000000)
+        function bersihkanNominal(strNominal) {
+            if (!strNominal || strNominal === "-" || strNominal === "Proses") return 0;
+            var angka = strNominal.toString().replace(/[^0-9]/g, "");
+            return parseInt(angka, 10) || 0;
         }
 
-        // 4. RENDER KARTU HASIL
+        // 4. FUNGSI FORMAT ANGKA KE RUPIAH ("4000000" -> "Rp4.000.000,-")
+        function formatRupiah(angka) {
+            return "Rp" + angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + ",-";
+        }
+
+        // 5. RENDER KARTU HASIL (GABUNGKAN BARIS PER NAMA MAHASISWA)
         function tampilkanHasil(data) {
             var hasilDiv = document.getElementById("hasil");
             hasilDiv.innerHTML = "";
 
-            if (data.length > 0 && data[0].error) {
-                hasilDiv.innerHTML = '<div class="error-msg">' + data[0].pesan + '</div>';
+            if (!data || data.length === 0) {
+                hasilDiv.innerHTML = '<div class="error-msg">Data tidak ditemukan. Pastikan nama yang diketik sudah benar.</div>';
                 return;
             }
 
-            if (!data || data.length === 0) {
-                hasilDiv.innerHTML = '<div class="error-msg">Data tidak ditemukan. Pastikan nama yang dicari sudah sesuai dengan yang terdaftar.</div>';
-                return;
-            }
+            // GABUNGKAN PEMBAYARAN BERDASARKAN NAMA YANG SAMA
+            var rekapMahasiswa = {};
+            data.forEach(function(item) {
+                var namaKey = item.nama.trim().toUpperCase();
+                if (!rekapMahasiswa[namaKey]) {
+                    rekapMahasiswa[namaKey] = {
+                        nama: item.nama,
+                        totalBayar: 0,
+                        riwayat: [],
+                        terakhirBayar: item.tanggal || "-"
+                    };
+                }
+                
+                var nominalAngka = bersihkanNominal(item.nominal);
+                rekapMahasiswa[namaKey].totalBayar += nominalAngka;
+                rekapMahasiswa[namaKey].terakhirBayar = item.tanggal || "-";
+                
+                // Simpan rincian tanggal dan nominal per transaksi
+                rekapMahasiswa[namaKey].riwayat.push({
+                    tanggal: item.tanggal || "-",
+                    nominal: item.nominal || "-"
+                });
+            });
 
             var html = "";
-            for (var i = 0; i < data.length; i++) {
-                var item = data[i];
-                var statusBadge = "";
-                var ketLowerCase = (item.keterangan || "").toLowerCase();
-                
-                if (ketLowerCase.includes("tidak valid") || ketLowerCase.includes("tolak") || ketLowerCase.includes("revisi")) {
-                    statusBadge = `<span class="status-badge badge-invalid">✕ ${item.keterangan}</span>`;
-                } else if (ketLowerCase.includes("valid") || ketLowerCase.includes("terverifikasi") || ketLowerCase.includes("lunas")) {
-                    statusBadge = `<span class="status-badge badge-valid">✓ ${item.keterangan}</span>`;
-                } else {
-                    statusBadge = `<span class="status-badge badge-proses">⏳ ${item.keterangan}</span>`;
-                }
+            var kunciNama = Object.keys(rekapMahasiswa);
 
-                let tglDisplay = (item.tanggal === "Proses" || item.tanggal === "" || item.tanggal === "-") ? '<span class="text-proses">Proses</span>' : item.tanggal;
-                let nomDisplay = (item.nominal === "Proses" || item.nominal === "" || item.nominal === "-") ? '<span class="text-proses">Proses</span>' : item.nominal;
+            // Batasi tampilan maksimal 10 mahasiswa agar tidak kepanjangan
+            var batasTampil = Math.min(kunciNama.length, 10);
+
+            for (var i = 0; i < batasTampil; i++) {
+                var mhs = rekapMahasiswa[kunciNama[i]];
+                
+                // CEK STATUS LUNAS (TARGET RP 6.000.000)
+                var isLunas = mhs.totalBayar >= 6000000;
+                var statusBadge = isLunas 
+                    ? `<span class="status-badge badge-lunas">✓ LUNAS</span>` 
+                    : `<span class="status-badge badge-belum">⏳ BELUM LUNAS</span>`;
+
+                var totalRupiah = formatRupiah(mhs.totalBayar);
+                var sisaTagihan = isLunas ? 0 : (6000000 - mhs.totalBayar);
+                var teksSisa = isLunas ? "Sudah Memenuhi Tagihan" : ("Kurang " + formatRupiah(sisaTagihan));
+
+                // BUAT DAFTAR RIWAYAT (JIKA BAYAR LEBIH DARI 1 KALI)
+                var riwayatHtml = "";
+                if (mhs.riwayat.length > 1) {
+                    riwayatHtml += `<div class="history-section"><div class="history-title">Riwayat Pembayaran:</div>`;
+                    mhs.riwayat.forEach(function(r, idx) {
+                        riwayatHtml += `<div class="history-item"><span>Tahap ${idx + 1} (${r.tanggal})</span> <strong>${r.nominal}</strong></div>`;
+                    });
+                    riwayatHtml += `</div>`;
+                }
 
                 html += `
                 <div class="result-card">
                     <div class="result-header">
-                        <div class="student-name">${item.nama}</div>
+                        <div>
+                            <div class="student-name">${mhs.nama}</div>
+                            <div class="student-nim">${teksSisa}</div>
+                        </div>
                         <div>${statusBadge}</div>
                     </div>
                     <div class="detail-row">
                         <div class="detail-item">
-                            <span>NOMINAL PEMBAYARAN</span>
-                            <strong>${nomDisplay}</strong>
+                            <span>TOTAL TERBAYAR</span>
+                            <strong>${totalRupiah}</strong>
                         </div>
                         <div class="detail-item">
-                            <span>TANGGAL PEMBAYARAN</span>
-                            <strong>${tglDisplay}</strong>
+                            <span>TANGGAL BAYAR TERAKHIR</span>
+                            <strong>${mhs.terakhirBayar}</strong>
                         </div>
                     </div>
+                    ${riwayatHtml}
                 </div>`;
+            }
+
+            if (kunciNama.length > 10) {
+                html += `<div class="info-msg">Menampilkan 10 nama teratas. Ketik nama lebih lengkap untuk hasil spesifik.</div>`;
             }
 
             hasilDiv.innerHTML = html;
