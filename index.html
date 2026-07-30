@@ -128,6 +128,37 @@
             border: 1px solid #f1f5f9;
         }
 
+        .search-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .search-status {
+            font-size: 12px;
+            font-weight: 600;
+            color: #10b981;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #10b981;
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.4); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
         .search-box {
             position: relative;
             margin-bottom: 28px;
@@ -217,29 +248,10 @@
             text-transform: uppercase;
         }
 
-        .badge-lunas {
-            background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
-            color: #15803d;
-            border: 1px solid #86efac;
-        }
-
-        .badge-belum {
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            color: #b45309;
-            border: 1px solid #fcd34d;
-        }
-
-        .badge-invalid {
-            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-            color: #b91c1c;
-            border: 1px solid #f87171;
-        }
-
-        .badge-proses {
-            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
-            color: #0369a1;
-            border: 1px solid #7dd3fc;
-        }
+        .badge-lunas { background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); color: #15803d; border: 1px solid #86efac; }
+        .badge-belum { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); color: #b45309; border: 1px solid #fcd34d; }
+        .badge-invalid { background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); color: #b91c1c; border: 1px solid #f87171; }
+        .badge-proses { background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%); color: #0369a1; border: 1px solid #7dd3fc; }
 
         .detail-row {
             display: grid;
@@ -363,6 +375,13 @@
     </div>
 
     <div class="main-card">
+        <div class="search-header">
+            <span style="font-size: 13px; font-weight: 700; color: #475569;">PENELUSURAN MAHASISWA</span>
+            <div class="search-status" id="indicatorStatus">
+                <span class="status-dot"></span> <span id="textStatus">Sistem Siap</span>
+            </div>
+        </div>
+
         <div class="search-box">
             <input type="text" id="namaCari" placeholder="Ketik nama lengkap (min. 3 huruf)..." autocomplete="off">
         </div>
@@ -383,6 +402,8 @@
         const CACHE_DURATION = 5 * 60 * 1000;
 
         let databasePembayaran = [];
+        let isCacheReady = false;
+        let searchTimeout = null;
 
         document.addEventListener("DOMContentLoaded", () => {
             muatDatabaseCache();
@@ -393,18 +414,35 @@
                 const query = this.value.trim().toLowerCase();
                 const hasilDiv = document.getElementById("hasil");
 
+                // Clear debounce agar tidak spamming server saat mengetik cepat
+                if (searchTimeout) clearTimeout(searchTimeout);
+
                 if (query.length < 3) {
                     hasilDiv.innerHTML = '<div class="info-msg">Ketik minimal 3 huruf pada kotak di atas untuk melihat status pembayaran Anda.</div>';
                     return;
                 }
 
-                if (databasePembayaran.length > 0) {
+                // 1. Jika Cache sudah siap -> Tampilkan LANGSUNG dalam 0 detik
+                if (isCacheReady && databasePembayaran.length > 0) {
                     const hasilFilter = databasePembayaran.filter(item => 
                         item.nama && item.nama.toLowerCase().includes(query)
                     );
                     tampilkanHasil(hasilFilter);
-                } else {
-                    hasilDiv.innerHTML = '<p class="loading">⏳ Sedang memuat database... Mohon tunggu sebentar.</p>';
+                } 
+                // 2. Jika Cache MASIH LOADING -> Lakukan pencarian langsung ke Server (Live Fetch)
+                else {
+                    hasilDiv.innerHTML = '<p class="loading">⏳ Menelusuri data pembayaran... Mohon tunggu.</p>';
+                    
+                    searchTimeout = setTimeout(() => {
+                        fetch(SCRIPT_URL + "?nama=" + encodeURIComponent(query))
+                            .then(res => res.json())
+                            .then(data => {
+                                tampilkanHasil(data);
+                            })
+                            .catch(err => {
+                                hasilDiv.innerHTML = '<div class="error-msg">Gagal mengambil data. Periksa koneksi internet Anda.</div>';
+                            });
+                    }, 400); // Tunggu 400ms setelah selesai mengetik
                 }
             });
         });
@@ -416,19 +454,48 @@
 
             if (cachedData && cachedTime && (now - cachedTime < CACHE_DURATION)) {
                 databasePembayaran = JSON.parse(cachedData);
+                isCacheReady = true;
+                updateStatus("Cache Aktif (Super Cepat)", "#10b981");
                 return;
             }
+
+            updateStatus("Sinkronisasi Database...", "#f59e0b");
 
             fetch(SCRIPT_URL + "?action=all")
                 .then(res => res.json())
                 .then(data => {
                     if (Array.isArray(data) && !data[0]?.error) {
                         databasePembayaran = data;
+                        isCacheReady = true;
                         sessionStorage.setItem(CACHE_KEY, JSON.stringify(data));
                         sessionStorage.setItem(CACHE_TIME_KEY, now);
+                        updateStatus("Sistem Siap", "#10b981");
+                        
+                        // Jika saat loading selesai user sedang mengetik sesuatu, render ulang
+                        const currentInput = document.getElementById("namaCari").value.trim().toLowerCase();
+                        if (currentInput.length >= 3) {
+                            const hasilFilter = databasePembayaran.filter(item => 
+                                item.nama && item.nama.toLowerCase().includes(currentInput)
+                            );
+                            tampilkanHasil(hasilFilter);
+                        }
                     }
                 })
-                .catch(err => console.error("Gagal menyinkronkan database cache:", err));
+                .catch(err => {
+                    console.error("Cache background gagal, beralih ke mode Live Query:", err);
+                    isCacheReady = false;
+                    updateStatus("Mode Pencarian Langsung", "#3b82f6");
+                });
+        }
+
+        function updateStatus(teks, warna) {
+            const dot = document.querySelector(".status-dot");
+            const txt = document.getElementById("textStatus");
+            if (dot && txt) {
+                dot.style.backgroundColor = warna;
+                txt.style.color = warna;
+                txt.innerText = teks;
+            }
         }
 
         function bersihkanNominal(strNominal) {
@@ -446,11 +513,10 @@
             hasilDiv.innerHTML = "";
 
             if (!data || data.length === 0) {
-                hasilDiv.innerHTML = '<div class="error-msg">Data tidak ditemukan. Pastikan nama yang diketik sudah benar.</div>';
+                hasilDiv.innerHTML = '<div class="error-msg">Data tidak ditemukan. Pastikan nama yang diketik sudah sesuai dengan yang terdaftar.</div>';
                 return;
             }
 
-            // AKUMULASI DAN KELOMPOKKAN PER NAMA
             var rekapMahasiswa = {};
             data.forEach(function(item) {
                 var namaKey = item.nama.trim().toUpperCase();
@@ -460,18 +526,16 @@
                         totalBayar: 0,
                         riwayat: [],
                         terakhirBayar: item.tanggal || "-",
-                        statusAkhir: item.status // valid / invalid / proses
+                        statusAkhir: item.status
                     };
                 }
                 
-                // HANYA hitung nominal jika statusnya VALID
                 if (item.status === "valid") {
                     var nominalAngka = bersihkanNominal(item.nominal);
                     rekapMahasiswa[namaKey].totalBayar += nominalAngka;
                     rekapMahasiswa[namaKey].terakhirBayar = item.tanggal || "-";
                 }
                 
-                // Simpan status terakhir (prioritaskan jika ada yang tidak valid / proses)
                 rekapMahasiswa[namaKey].statusAkhir = item.status;
                 
                 rekapMahasiswa[namaKey].riwayat.push({
@@ -494,21 +558,18 @@
                 var totalRupiah = "-";
                 var tglTerakhir = "-";
 
-                // KONDISI 1: JIKA STATUS ADA YANG TIDAK VALID
                 if (mhs.statusAkhir === "invalid") {
                     statusBadge = `<span class="status-badge badge-invalid">✕ TIDAK VALID</span>`;
                     teksSisa = `<span style="color: #dc2626;">Bukti transfer tidak valid. Silakan upload ulang.</span>`;
                     totalRupiah = "Ditolak";
                     tglTerakhir = "-";
                 } 
-                // KONDISI 2: JIKA BELUM DIVERIFIKASI ADMIN (PROSES)
                 else if (mhs.statusAkhir === "proses" && mhs.totalBayar === 0) {
                     statusBadge = `<span class="status-badge badge-proses">⏳ DALAM PROSES</span>`;
                     teksSisa = `<span style="color: #0369a1;">Bukti transfer dalam proses verifikasi admin.</span>`;
                     totalRupiah = "Menunggu Verifikasi";
                     tglTerakhir = "Proses";
                 } 
-                // KONDISI 3: SUDAH ADA TRANSAKSI YANG VALID
                 else {
                     var isLunas = mhs.totalBayar >= 6000000;
                     statusBadge = isLunas 
@@ -523,7 +584,6 @@
                         : ("Kurang " + formatRupiah(sisaTagihan));
                 }
 
-                // BUAT DAFTAR RIWAYAT TRANSAKSI
                 var riwayatHtml = "";
                 if (mhs.riwayat.length > 0) {
                     riwayatHtml += `<div class="history-section"><div class="history-title">Riwayat Pembayaran</div>`;
