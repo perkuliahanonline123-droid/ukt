@@ -13,6 +13,7 @@
         input[type="text"] { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 16px; }
         button { width: 100%; background-color: #2980b9; color: white; padding: 12px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; transition: background 0.3s; }
         button:hover { background-color: #3498db; }
+        button:disabled { background-color: #95a5a6; cursor: not-allowed; }
         #hasil { margin-top: 20px; }
         .card { border: 1px solid #e1e8ed; border-radius: 6px; padding: 15px; margin-bottom: 15px; background-color: #fafbfc; }
         .card h3 { margin: 0 0 10px 0; color: #2c3e50; border-bottom: 2px solid #ecf0f1; padding-bottom: 5px; }
@@ -39,11 +40,12 @@
     </div>
 
     <script>
-        // PERBAIKAN: Masukkan URL Web App Google Apps Script secara langsung (Hardcode)
+        // PASTIKAN URL INI MASIH AKTIF. Jika Anda melakukan deploy ulang di Apps Script, URL ini BISA BERUBAH.
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbypD_evDfABwwvCoHPSkAxjxDL1lQ4MkC10mWs8fY1LV5CS2p3Mrlu4WEZ3voQTLS654A/exec";
 
         function cariData() {
-            var nama = document.getElementById("namaCari").value;
+            // Gunakan .trim() agar jika ada spasi tidak sengaja di awal/akhir tidak error
+            var nama = document.getElementById("namaCari").value.trim();
             var hasilDiv = document.getElementById("hasil");
             var btnCari = document.getElementById("btnCari");
 
@@ -54,21 +56,27 @@
 
             hasilDiv.innerHTML = '<p class="loading">Mengambil data... Mohon tunggu.</p>';
             btnCari.disabled = true;
-            btnCari.style.backgroundColor = "#95a5a6";
 
             var targetUrl = SCRIPT_URL + "?nama=" + encodeURIComponent(nama);
 
             fetch(targetUrl)
-                .then(response => response.json())
-                .then(data => {
+                .then(response => response.text()) // PERBAIKAN: Ambil sebagai Text dulu, jangan langsung JSON
+                .then(text => {
                     btnCari.disabled = false;
-                    btnCari.style.backgroundColor = "#2980b9";
-                    tampilkanHasil(data);
+                    
+                    try {
+                        // Coba ubah text menjadi JSON
+                        var data = JSON.parse(text);
+                        tampilkanHasil(data);
+                    } catch (e) {
+                        // Jika gagal di-parse, artinya URL Apps Script mengembalikan halaman HTML/Error (bukan data API)
+                        console.error("Respons dari server bukan JSON:", text);
+                        hasilDiv.innerHTML = '<p style="color:red; text-align:center;"><strong>Terjadi Kesalahan Server!</strong><br>Pastikan URL Web App Google Apps Script masih aktif dan hak akses (Who has access) diatur ke "Anyone".</p>';
+                    }
                 })
                 .catch(error => {
                     btnCari.disabled = false;
-                    btnCari.style.backgroundColor = "#2980b9";
-                    hasilDiv.innerHTML = '<p style="color:red; text-align:center;">Gagal menghubungi server. Periksa koneksi Anda.</p>';
+                    hasilDiv.innerHTML = '<p style="color:red; text-align:center;">Gagal menghubungi server. Periksa koneksi internet Anda.</p>';
                     console.error('Error fetching data:', error);
                 });
         }
@@ -92,10 +100,13 @@
                 var item = data[i];
                 var statusClass = "";
 
-                if (item.keterangan.includes("Valid") && !item.keterangan.includes("Tidak Valid")) {
-                    statusClass = "status-valid";
-                } else if (item.keterangan.includes("Tidak Valid")) {
+                // Sesuaikan logika agar lebih kebal (case-insensitive)
+                var ketLowerCase = item.keterangan.toLowerCase();
+                
+                if (ketLowerCase.includes("tidak valid") || ketLowerCase.includes("tolak") || ketLowerCase.includes("revisi")) {
                     statusClass = "status-invalid";
+                } else if (ketLowerCase.includes("valid") || ketLowerCase.includes("terverifikasi")) {
+                    statusClass = "status-valid";
                 } else {
                     statusClass = "status-proses";
                 }
@@ -104,8 +115,8 @@
                 html += '<h3>' + item.nama + '</h3>';
                 html += '<p><strong>Status Keterangan:</strong> <span class="' + statusClass + '">' + item.keterangan + '</span></p>';
                 
-                let tglDisplay = item.tanggal === "Proses" ? '<span class="text-proses">Proses</span>' : item.tanggal;
-                let nomDisplay = item.nominal === "Proses" ? '<span class="text-proses">Proses</span>' : item.nominal;
+                let tglDisplay = (item.tanggal === "Proses" || item.tanggal === "") ? '<span class="text-proses">Proses</span>' : item.tanggal;
+                let nomDisplay = (item.nominal === "Proses" || item.nominal === "") ? '<span class="text-proses">Proses</span>' : item.nominal;
 
                 if (item.tanggal !== "-" || item.nominal !== "-") {
                     html += '<hr style="border: 0; border-top: 1px solid #ecf0f1; margin: 10px 0;">';
