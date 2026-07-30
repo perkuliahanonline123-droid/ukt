@@ -102,15 +102,14 @@
                 html += '<h3>' + item.nama + '</h3>';
                 html += '<p><strong>Status Keterangan:</strong> <span class="' + statusClass + '">' + item.keterangan + '</span></p>';
                 
-                // Format tampilan untuk tulisan "Proses"
                 let tglDisplay = item.tanggal === "Proses" ? '<span class="text-proses">Proses</span>' : item.tanggal;
                 let nomDisplay = item.nominal === "Proses" ? '<span class="text-proses">Proses</span>' : item.nominal;
 
-                // Tampilkan Tanggal dan Nominal jika datanya bukan "-"
                 if (item.tanggal !== "-" || item.nominal !== "-") {
                     html += '<hr style="border: 0; border-top: 1px solid #ecf0f1; margin: 10px 0;">';
-                    html += '<p><strong>Tanggal Pembayaran:</strong> ' + tglDisplay + '</p>';
+                    // Menampilkan Nominal terlebih dahulu, lalu Tanggal di bawahnya
                     html += '<p><strong>Nominal Pembayaran:</strong> ' + nomDisplay + '</p>';
+                    html += '<p><strong>Tanggal Pembayaran:</strong> ' + tglDisplay + '</p>';
                 }
                 
                 html += '</div>';
