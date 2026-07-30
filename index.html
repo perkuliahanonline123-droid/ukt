@@ -40,11 +40,10 @@
     </div>
 
     <script>
-        // PASTIKAN URL INI MASIH AKTIF. Jika Anda melakukan deploy ulang di Apps Script, URL ini BISA BERUBAH.
+        // URL Web App Google Apps Script
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbypD_evDfABwwvCoHPSkAxjxDL1lQ4MkC10mWs8fY1LV5CS2p3Mrlu4WEZ3voQTLS654A/exec";
 
         function cariData() {
-            // Gunakan .trim() agar jika ada spasi tidak sengaja di awal/akhir tidak error
             var nama = document.getElementById("namaCari").value.trim();
             var hasilDiv = document.getElementById("hasil");
             var btnCari = document.getElementById("btnCari");
@@ -60,16 +59,14 @@
             var targetUrl = SCRIPT_URL + "?nama=" + encodeURIComponent(nama);
 
             fetch(targetUrl)
-                .then(response => response.text()) // PERBAIKAN: Ambil sebagai Text dulu, jangan langsung JSON
+                .then(response => response.text()) 
                 .then(text => {
                     btnCari.disabled = false;
                     
                     try {
-                        // Coba ubah text menjadi JSON
                         var data = JSON.parse(text);
                         tampilkanHasil(data);
                     } catch (e) {
-                        // Jika gagal di-parse, artinya URL Apps Script mengembalikan halaman HTML/Error (bukan data API)
                         console.error("Respons dari server bukan JSON:", text);
                         hasilDiv.innerHTML = '<p style="color:red; text-align:center;"><strong>Terjadi Kesalahan Server!</strong><br>Pastikan URL Web App Google Apps Script masih aktif dan hak akses (Who has access) diatur ke "Anyone".</p>';
                     }
@@ -100,7 +97,6 @@
                 var item = data[i];
                 var statusClass = "";
 
-                // Sesuaikan logika agar lebih kebal (case-insensitive)
                 var ketLowerCase = item.keterangan.toLowerCase();
                 
                 if (ketLowerCase.includes("tidak valid") || ketLowerCase.includes("tolak") || ketLowerCase.includes("revisi")) {
