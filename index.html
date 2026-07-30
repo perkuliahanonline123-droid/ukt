@@ -6,41 +6,125 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cek Pembayaran Herregistrasi</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: #2c3e50; margin-bottom: 20px; }
+        * { box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #f4f7f6; 
+            margin: 0; 
+            padding: 20px; 
+            color: #333; 
+        }
+        .container { 
+            max-width: 600px; 
+            margin: 30px auto; 
+            background: #fff; 
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06); 
+        }
+        h2 { 
+            text-align: center; 
+            color: #1e293b; 
+            margin-top: 0;
+            margin-bottom: 8px; 
+        }
+        p.subtitle {
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
         .form-group { margin-bottom: 15px; }
-        input[type="text"] { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 16px; }
-        button { width: 100%; background-color: #2980b9; color: white; padding: 12px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; transition: background 0.3s; }
-        button:hover { background-color: #3498db; }
-        button:disabled { background-color: #95a5a6; cursor: not-allowed; }
-        #hasil { margin-top: 20px; }
-        .card { border: 1px solid #e1e8ed; border-radius: 6px; padding: 15px; margin-bottom: 15px; background-color: #fafbfc; }
-        .card h3 { margin: 0 0 10px 0; color: #2c3e50; border-bottom: 2px solid #ecf0f1; padding-bottom: 5px; }
-        .card p { margin: 8px 0; font-size: 15px; }
+        input[type="text"] { 
+            width: 100%; 
+            padding: 14px; 
+            border: 1.5px solid #cbd5e1; 
+            border-radius: 8px; 
+            font-size: 15px; 
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        input[type="text"]:focus {
+            border-color: #0d9488;
+        }
+        button { 
+            width: 100%; 
+            background-color: #0d9488; 
+            color: white; 
+            padding: 14px; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 16px; 
+            font-weight: 600;
+            cursor: pointer; 
+            transition: background 0.3s; 
+        }
+        button:hover { background-color: #0f766e; }
+        button:disabled { background-color: #94a3b8; cursor: not-allowed; }
+        
+        #hasil { margin-top: 25px; }
+        
+        .card { 
+            border: 1px solid #e2e8f0; 
+            border-radius: 10px; 
+            padding: 18px; 
+            margin-bottom: 15px; 
+            background-color: #f8fafc; 
+        }
+        .card h3 { 
+            margin: 0 0 12px 0; 
+            color: #1e293b; 
+            border-bottom: 1.5px solid #e2e8f0; 
+            padding-bottom: 8px; 
+            font-size: 18px;
+        }
+        .card p { margin: 8px 0; font-size: 14px; color: #475569; }
         
         /* Badge Status */
-        .status-valid { color: #27ae60; font-weight: bold; }
-        .status-proses { color: #f39c12; font-weight: bold; }
-        .status-invalid { color: #e74c3c; font-weight: bold; }
+        .status-valid { color: #16a34a; font-weight: bold; }
+        .status-proses { color: #d97706; font-weight: bold; }
+        .status-invalid { color: #dc2626; font-weight: bold; }
         
-        /* Highlight Teks Proses di Rincian */
-        .text-proses { color: #f39c12; font-weight: bold; background: #fdf3e5; padding: 2px 6px; border-radius: 4px; }
-        .loading { text-align: center; font-style: italic; color: #7f8c8d; }
+        .text-proses { 
+            color: #d97706; 
+            font-weight: 600; 
+            background: #fef3c7; 
+            padding: 2px 8px; 
+            border-radius: 4px; 
+            font-size: 13px;
+        }
+        .loading { 
+            text-align: center; 
+            font-style: italic; 
+            color: #64748b; 
+            padding: 15px 0;
+        }
+        .error-msg {
+            background-color: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h2>Cek Status Pembayaran</h2>
+        <p class="subtitle">Layanan Administrasi Herregistrasi</p>
+        
         <div class="form-group">
-            <input type="text" id="namaCari" placeholder="Masukkan nama Anda (min. 3 huruf)" onkeydown="if(event.key === 'Enter') cariData()">
+            <input type="text" id="namaCari" placeholder="Masukkan nama lengkap (min. 3 huruf)" onkeydown="if(event.key === 'Enter') cariData()">
         </div>
-        <button onclick="cariData()" id="btnCari">Cari Data</button>
+        <button onclick="cariData()" id="btnCari">Cari Data Pembayaran</button>
+        
         <div id="hasil"></div>
     </div>
 
     <script>
-        // URL Web App Google Apps Script
+        // URL Web App Anda
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbypD_evDfABwwvCoHPSkAxjxDL1lQ4MkC10mWs8fY1LV5CS2p3Mrlu4WEZ3voQTLS654A/exec";
 
         function cariData() {
@@ -49,11 +133,11 @@
             var btnCari = document.getElementById("btnCari");
 
             if (nama.length < 3) {
-                hasilDiv.innerHTML = '<p style="color:red; text-align:center;">Silakan masukkan minimal 3 huruf nama Anda.</p>';
+                hasilDiv.innerHTML = '<div class="error-msg">Silakan masukkan minimal 3 huruf nama Anda.</div>';
                 return;
             }
 
-            hasilDiv.innerHTML = '<p class="loading">Mengambil data... Mohon tunggu.</p>';
+            hasilDiv.innerHTML = '<p class="loading">Menelusuri database pembayaran... Mohon tunggu.</p>';
             btnCari.disabled = true;
 
             var targetUrl = SCRIPT_URL + "?nama=" + encodeURIComponent(nama);
@@ -62,18 +146,17 @@
                 .then(response => response.text()) 
                 .then(text => {
                     btnCari.disabled = false;
-                    
                     try {
                         var data = JSON.parse(text);
                         tampilkanHasil(data);
                     } catch (e) {
-                        console.error("Respons dari server bukan JSON:", text);
-                        hasilDiv.innerHTML = '<p style="color:red; text-align:center;"><strong>Terjadi Kesalahan Server!</strong><br>Pastikan URL Web App Google Apps Script masih aktif dan hak akses (Who has access) diatur ke "Anyone".</p>';
+                        console.error("Kesalahan parsing JSON:", text);
+                        hasilDiv.innerHTML = '<div class="error-msg"><strong>Terjadi Kesalahan Server!</strong><br>Pastikan Google Apps Script sudah di-deploy ke versi baru dengan hak akses "Anyone".</div>';
                     }
                 })
                 .catch(error => {
                     btnCari.disabled = false;
-                    hasilDiv.innerHTML = '<p style="color:red; text-align:center;">Gagal menghubungi server. Periksa koneksi internet Anda.</p>';
+                    hasilDiv.innerHTML = '<div class="error-msg">Gagal terhubung ke server. Periksa koneksi internet Anda.</div>';
                     console.error('Error fetching data:', error);
                 });
         }
@@ -83,12 +166,12 @@
             hasilDiv.innerHTML = "";
 
             if (data.length > 0 && data[0].error) {
-                hasilDiv.innerHTML = '<p style="text-align:center; color:#e74c3c;">' + data[0].pesan + '</p>';
+                hasilDiv.innerHTML = '<div class="error-msg">' + data[0].pesan + '</div>';
                 return;
             }
 
             if (!data || data.length === 0) {
-                hasilDiv.innerHTML = '<p style="text-align:center; color:#e74c3c;">Data tidak ditemukan. Pastikan nama yang Anda masukkan sudah benar.</p>';
+                hasilDiv.innerHTML = '<div class="error-msg">Data tidak ditemukan. Pastikan nama yang dicari sudah sesuai dengan yang terdaftar.</div>';
                 return;
             }
 
@@ -97,11 +180,11 @@
                 var item = data[i];
                 var statusClass = "";
 
-                var ketLowerCase = item.keterangan.toLowerCase();
+                var ketLowerCase = (item.keterangan || "").toLowerCase();
                 
                 if (ketLowerCase.includes("tidak valid") || ketLowerCase.includes("tolak") || ketLowerCase.includes("revisi")) {
                     statusClass = "status-invalid";
-                } else if (ketLowerCase.includes("valid") || ketLowerCase.includes("terverifikasi")) {
+                } else if (ketLowerCase.includes("valid") || ketLowerCase.includes("terverifikasi") || ketLowerCase.includes("lunas")) {
                     statusClass = "status-valid";
                 } else {
                     statusClass = "status-proses";
@@ -111,15 +194,12 @@
                 html += '<h3>' + item.nama + '</h3>';
                 html += '<p><strong>Status Keterangan:</strong> <span class="' + statusClass + '">' + item.keterangan + '</span></p>';
                 
-                let tglDisplay = (item.tanggal === "Proses" || item.tanggal === "") ? '<span class="text-proses">Proses</span>' : item.tanggal;
-                let nomDisplay = (item.nominal === "Proses" || item.nominal === "") ? '<span class="text-proses">Proses</span>' : item.nominal;
+                let tglDisplay = (item.tanggal === "Proses" || item.tanggal === "" || item.tanggal === "-") ? '<span class="text-proses">Proses</span>' : item.tanggal;
+                let nomDisplay = (item.nominal === "Proses" || item.nominal === "" || item.nominal === "-") ? '<span class="text-proses">Proses</span>' : item.nominal;
 
-                if (item.tanggal !== "-" || item.nominal !== "-") {
-                    html += '<hr style="border: 0; border-top: 1px solid #ecf0f1; margin: 10px 0;">';
-                    html += '<p><strong>Nominal Pembayaran:</strong> ' + nomDisplay + '</p>';
-                    html += '<p><strong>Tanggal Pembayaran:</strong> ' + tglDisplay + '</p>';
-                }
-                
+                html += '<hr style="border: 0; border-top: 1px solid #cbd5e1; margin: 10px 0;">';
+                html += '<p><strong>Nominal Pembayaran:</strong> ' + nomDisplay + '</p>';
+                html += '<p><strong>Tanggal Pembayaran:</strong> ' + tglDisplay + '</p>';
                 html += '</div>';
             }
 
