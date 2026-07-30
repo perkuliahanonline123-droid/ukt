@@ -16,10 +16,15 @@
         #hasil { margin-top: 20px; }
         .card { border: 1px solid #e1e8ed; border-radius: 6px; padding: 15px; margin-bottom: 15px; background-color: #fafbfc; }
         .card h3 { margin: 0 0 10px 0; color: #2c3e50; border-bottom: 2px solid #ecf0f1; padding-bottom: 5px; }
-        .card p { margin: 5px 0; font-size: 14px; }
+        .card p { margin: 8px 0; font-size: 15px; }
+        
+        /* Badge Status */
         .status-valid { color: #27ae60; font-weight: bold; }
         .status-proses { color: #f39c12; font-weight: bold; }
         .status-invalid { color: #e74c3c; font-weight: bold; }
+        
+        /* Highlight Teks Proses di Rincian */
+        .text-proses { color: #f39c12; font-weight: bold; background: #fdf3e5; padding: 2px 6px; border-radius: 4px; }
         .loading { text-align: center; font-style: italic; color: #7f8c8d; }
     </style>
 </head>
@@ -34,7 +39,6 @@
     </div>
 
     <script>
-        // Mengambil URL Google Apps Script secara dinamis dari Code.gs
         const SCRIPT_URL = "<?= getScriptUrl() ?>";
 
         function cariData() {
@@ -47,12 +51,10 @@
                 return;
             }
 
-            // Tampilan loading
             hasilDiv.innerHTML = '<p class="loading">Mengambil data... Mohon tunggu.</p>';
             btnCari.disabled = true;
             btnCari.style.backgroundColor = "#95a5a6";
 
-            // Endpoint JSON Fetch (Tanpa google.script.run)
             var targetUrl = SCRIPT_URL + "?nama=" + encodeURIComponent(nama);
 
             fetch(targetUrl)
@@ -66,7 +68,6 @@
                     btnCari.disabled = false;
                     btnCari.style.backgroundColor = "#2980b9";
                     hasilDiv.innerHTML = '<p style="color:red; text-align:center;">Gagal menghubungi server. Periksa koneksi Anda.</p>';
-                    console.error("Error Fetch:", error);
                 });
         }
 
@@ -99,13 +100,17 @@
 
                 html += '<div class="card">';
                 html += '<h3>' + item.nama + '</h3>';
-                html += '<p><strong>Status:</strong> <span class="' + statusClass + '">' + item.keterangan + '</span></p>';
+                html += '<p><strong>Status Keterangan:</strong> <span class="' + statusClass + '">' + item.keterangan + '</span></p>';
                 
-                // Jika statusnya valid atau kosong (proses), tampilkan ini. 
-                // Jika '-' atau tidak valid, tidak ditampilkan.
-                if (item.tanggal !== "-" && item.nominal !== "-") {
-                    html += '<p><strong>Tanggal Pembayaran:</strong> ' + item.tanggal + '</p>';
-                    html += '<p><strong>Nominal Pembayaran:</strong> ' + item.nominal + '</p>';
+                // Format tampilan untuk tulisan "Proses"
+                let tglDisplay = item.tanggal === "Proses" ? '<span class="text-proses">Proses</span>' : item.tanggal;
+                let nomDisplay = item.nominal === "Proses" ? '<span class="text-proses">Proses</span>' : item.nominal;
+
+                // Tampilkan Tanggal dan Nominal jika datanya bukan "-"
+                if (item.tanggal !== "-" || item.nominal !== "-") {
+                    html += '<hr style="border: 0; border-top: 1px solid #ecf0f1; margin: 10px 0;">';
+                    html += '<p><strong>Tanggal Pembayaran:</strong> ' + tglDisplay + '</p>';
+                    html += '<p><strong>Nominal Pembayaran:</strong> ' + nomDisplay + '</p>';
                 }
                 
                 html += '</div>';
