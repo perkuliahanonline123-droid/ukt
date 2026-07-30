@@ -4,127 +4,364 @@
     <base target="_top">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cek Pembayaran Herregistrasi</title>
+    <title>Cek Pembayaran Kuliah - Portal Keuangan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; }
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-color: #f4f7f6; 
-            margin: 0; 
-            padding: 20px; 
-            color: #333; 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
         }
-        .container { 
-            max-width: 600px; 
-            margin: 30px auto; 
-            background: #fff; 
-            padding: 30px; 
-            border-radius: 12px; 
-            box-shadow: 0 8px 20px rgba(0,0,0,0.06); 
+
+        body {
+            background-color: #f8fafc;
+            color: #1e293b;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
         }
-        h2 { 
-            text-align: center; 
-            color: #1e293b; 
-            margin-top: 0;
-            margin-bottom: 8px; 
-        }
-        p.subtitle {
+
+        /* HEADER BANNER PERTAMA */
+        .hero-banner {
+            width: 100%;
+            max-width: 860px;
+            background: linear-state, linear-gradient(135deg, #1e1b4b 0%, #31106a 50%, #3b0764 100%);
+            background-color: #1e1b4b;
+            border-radius: 24px;
+            padding: 45px 30px;
             text-align: center;
-            color: #64748b;
-            font-size: 14px;
-            margin-bottom: 25px;
+            color: white;
+            box-shadow: 0 20px 25px -5px rgba(30, 27, 75, 0.15);
+            margin-bottom: 24px;
         }
-        .form-group { margin-bottom: 15px; }
-        input[type="text"] { 
-            width: 100%; 
-            padding: 14px; 
-            border: 1.5px solid #cbd5e1; 
-            border-radius: 8px; 
-            font-size: 15px; 
+
+        .badge-portal {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.15);
+            color: #e2e8f0;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            padding: 6px 16px;
+            border-radius: 30px;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+        }
+
+        .hero-banner h1 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .hero-banner p {
+            font-size: 15px;
+            color: #cbd5e1;
+            max-width: 520px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* KARTU BATAS AKHIR (TAHAP 1 & TAHAP 2) */
+        .deadline-container {
+            width: 100%;
+            max-width: 860px;
+            background: #fffcf0;
+            border: 1px solid #fef08a;
+            border-radius: 18px;
+            padding: 16px 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+        }
+
+        .deadline-box {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .deadline-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-weight: bold;
+        }
+
+        .icon-orange {
+            background-color: #f59e0b;
+            color: white;
+        }
+
+        .icon-purple {
+            background-color: #4f46e5;
+            color: white;
+        }
+
+        .deadline-text span {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            color: #94a3b8;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .deadline-text strong {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        /* WADAH PENCARIAN & HASIL */
+        .main-card {
+            width: 100%;
+            max-width: 860px;
+            background: white;
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+            border: 1px solid #f1f5f9;
+        }
+
+        /* INPUT SEARCH BOX */
+        .search-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 16px 20px 16px 48px;
+            border: 1.5px solid #4f46e5;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 500;
+            color: #1e293b;
             outline: none;
-            transition: border-color 0.2s;
+            transition: all 0.2s;
+            background: #fafaf9;
         }
-        input[type="text"]:focus {
-            border-color: #0d9488;
+
+        .search-box input:focus {
+            background: white;
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
         }
-        button { 
-            width: 100%; 
-            background-color: #0d9488; 
-            color: white; 
-            padding: 14px; 
-            border: none; 
-            border-radius: 8px; 
-            font-size: 16px; 
-            font-weight: 600;
-            cursor: pointer; 
-            transition: background 0.3s; 
-        }
-        button:hover { background-color: #0f766e; }
-        button:disabled { background-color: #94a3b8; cursor: not-allowed; }
-        
-        #hasil { margin-top: 25px; }
-        
-        .card { 
-            border: 1px solid #e2e8f0; 
-            border-radius: 10px; 
-            padding: 18px; 
-            margin-bottom: 15px; 
-            background-color: #f8fafc; 
-        }
-        .card h3 { 
-            margin: 0 0 12px 0; 
-            color: #1e293b; 
-            border-bottom: 1.5px solid #e2e8f0; 
-            padding-bottom: 8px; 
+
+        .search-box::before {
+            content: "🔍";
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
             font-size: 18px;
+            opacity: 0.6;
         }
-        .card p { margin: 8px 0; font-size: 14px; color: #475569; }
-        
-        /* Badge Status */
-        .status-valid { color: #16a34a; font-weight: bold; }
-        .status-proses { color: #d97706; font-weight: bold; }
-        .status-invalid { color: #dc2626; font-weight: bold; }
-        
-        .text-proses { 
-            color: #d97706; 
-            font-weight: 600; 
-            background: #fef3c7; 
-            padding: 2px 8px; 
-            border-radius: 4px; 
+
+        button.btn-cari {
+            width: 100%;
+            background-color: #0d9488;
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-bottom: 24px;
+        }
+
+        button.btn-cari:hover {
+            background-color: #0f766e;
+        }
+
+        button.btn-cari:disabled {
+            background-color: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        /* HASIL DATA (KARTU MAHASISWA) */
+        .result-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 16px;
+            background: #ffffff;
+            transition: transform 0.2s;
+        }
+
+        .result-card:hover {
+            border-color: #cbd5e1;
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 1px dashed #e2e8f0;
+            padding-bottom: 14px;
+            margin-bottom: 16px;
+        }
+
+        .student-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        /* BADGE STATUS YANG RAPID DAN MODERN */
+        .status-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
             font-size: 13px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
-        .loading { 
-            text-align: center; 
-            font-style: italic; 
-            color: #64748b; 
-            padding: 15px 0;
+
+        .badge-valid {
+            background-color: #dcfce7;
+            color: #15803d;
         }
-        .error-msg {
-            background-color: #fef2f2;
-            border: 1px solid #fecaca;
-            color: #dc2626;
-            padding: 12px;
-            border-radius: 8px;
-            text-align: center;
+
+        .badge-proses {
+            background-color: #fef3c7;
+            color: #b45309;
+        }
+
+        .badge-invalid {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .detail-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
             font-size: 14px;
+        }
+
+        .detail-item span {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+
+        .detail-item strong {
+            color: #1e293b;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .text-proses {
+            color: #d97706;
+            background: #fef3c7;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .loading, .error-msg {
+            text-align: center;
+            padding: 20px;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .error-msg {
+            color: #dc2626;
+            background: #fef2f2;
+            border-radius: 12px;
+            border: 1px solid #fee2e2;
+        }
+
+        footer {
+            margin-top: 30px;
+            font-size: 13px;
+            color: #94a3b8;
+            text-align: center;
+        }
+
+        /* RESPONSIF UNTUK HP */
+        @media (max-width: 640px) {
+            .deadline-container {
+                grid-template-columns: 1fr;
+                gap: 14px;
+            }
+            .hero-banner h1 {
+                font-size: 26px;
+            }
+            .detail-row {
+                grid-template-columns: 1fr;
+            }
+            .result-header {
+                flex-direction: column;
+                gap: 10px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Cek Status Pembayaran</h2>
-        <p class="subtitle">Layanan Administrasi Herregistrasi</p>
-        
-        <div class="form-group">
-            <input type="text" id="namaCari" placeholder="Masukkan nama lengkap (min. 3 huruf)" onkeydown="if(event.key === 'Enter') cariData()">
+
+    <!-- HERO BANNER UNGU DESAIN GAMBAR 2 -->
+    <div class="hero-banner">
+        <div class="badge-portal">PORTAL KEUANGAN</div>
+        <h1>Cek Pembayaran Kuliah</h1>
+        <p>Silakan ketik Nama Lengkap Anda untuk mengecek status pembayaran biaya kuliah secara real-time.</p>
+    </div>
+
+    <!-- KARTU BATAS AKHIR TAHAP 1 & 2 -->
+    <div class="deadline-container">
+        <div class="deadline-box">
+            <div class="deadline-icon icon-orange">📅</div>
+            <div class="deadline-text">
+                <span>BATAS AKHIR TAHAP 1</span>
+                <strong>31 Juli 2026</strong>
+            </div>
         </div>
-        <button onclick="cariData()" id="btnCari">Cari Data Pembayaran</button>
+        <div class="deadline-box">
+            <div class="deadline-icon icon-purple">🗓️</div>
+            <div class="deadline-text">
+                <span>BATAS AKHIR TAHAP 2</span>
+                <strong>25 Agustus 2026</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- KARTU UTAMA PENCARIAN -->
+    <div class="main-card">
+        <div class="search-box">
+            <input type="text" id="namaCari" placeholder="Masukkan nama lengkap (min. 3 huruf)..." onkeydown="if(event.key === 'Enter') cariData()">
+        </div>
         
+        <button onclick="cariData()" id="btnCari" class="btn-cari">Cari Data Pembayaran</button>
+
         <div id="hasil"></div>
     </div>
 
+    <footer>
+        &copy; 2026 Abdul Hakim, S.H., M.A. — Layanan Administrasi Akademik
+    </footer>
+
     <script>
-        // URL Web App Anda
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbypD_evDfABwwvCoHPSkAxjxDL1lQ4MkC10mWs8fY1LV5CS2p3Mrlu4WEZ3voQTLS654A/exec";
 
         function cariData() {
@@ -137,7 +374,7 @@
                 return;
             }
 
-            hasilDiv.innerHTML = '<p class="loading">Menelusuri database pembayaran... Mohon tunggu.</p>';
+            hasilDiv.innerHTML = '<p class="loading">⏳ Menelusuri database pembayaran... Mohon tunggu.</p>';
             btnCari.disabled = true;
 
             var targetUrl = SCRIPT_URL + "?nama=" + encodeURIComponent(nama);
@@ -178,29 +415,39 @@
             var html = "";
             for (var i = 0; i < data.length; i++) {
                 var item = data[i];
-                var statusClass = "";
+                var statusBadge = "";
 
                 var ketLowerCase = (item.keterangan || "").toLowerCase();
                 
+                // PENGATURAN WARNA BADGE
                 if (ketLowerCase.includes("tidak valid") || ketLowerCase.includes("tolak") || ketLowerCase.includes("revisi")) {
-                    statusClass = "status-invalid";
+                    statusBadge = `<span class="status-badge badge-invalid">✕ ${item.keterangan}</span>`;
                 } else if (ketLowerCase.includes("valid") || ketLowerCase.includes("terverifikasi") || ketLowerCase.includes("lunas")) {
-                    statusClass = "status-valid";
+                    statusBadge = `<span class="status-badge badge-valid">✓ ${item.keterangan}</span>`;
                 } else {
-                    statusClass = "status-proses";
+                    statusBadge = `<span class="status-badge badge-proses">⏳ ${item.keterangan}</span>`;
                 }
 
-                html += '<div class="card">';
-                html += '<h3>' + item.nama + '</h3>';
-                html += '<p><strong>Status Keterangan:</strong> <span class="' + statusClass + '">' + item.keterangan + '</span></p>';
-                
                 let tglDisplay = (item.tanggal === "Proses" || item.tanggal === "" || item.tanggal === "-") ? '<span class="text-proses">Proses</span>' : item.tanggal;
                 let nomDisplay = (item.nominal === "Proses" || item.nominal === "" || item.nominal === "-") ? '<span class="text-proses">Proses</span>' : item.nominal;
 
-                html += '<hr style="border: 0; border-top: 1px solid #cbd5e1; margin: 10px 0;">';
-                html += '<p><strong>Nominal Pembayaran:</strong> ' + nomDisplay + '</p>';
-                html += '<p><strong>Tanggal Pembayaran:</strong> ' + tglDisplay + '</p>';
-                html += '</div>';
+                html += `
+                <div class="result-card">
+                    <div class="result-header">
+                        <div class="student-name">${item.nama}</div>
+                        <div>${statusBadge}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-item">
+                            <span>NOMINAL PEMBAYARAN</span>
+                            <strong>${nomDisplay}</strong>
+                        </div>
+                        <div class="detail-item">
+                            <span>TANGGAL PEMBAYARAN</span>
+                            <strong>${tglDisplay}</strong>
+                        </div>
+                    </div>
+                </div>`;
             }
 
             hasilDiv.innerHTML = html;
